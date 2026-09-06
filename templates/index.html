@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NeetBase</title>
+    <link rel="stylesheet" href="/static/style.css">
+
+</head>
+
+<body>
+
+    <div class="container">
+        <h1>NeetBase</h1>
+
+        <button class="add-button" onclick="openModal()">Add Question</button>
+
+        <dialog id="add-modal">
+            <form action="/add" method="POST" class="question-form">
+
+                <div class="modal-header">
+                    <h2>Add Question</h2>
+                    <button type="button" class="close-button" onclick="closeModal()">×</button>
+                </div>
+
+                <input type="text" name="name" placeholder="Problem name" required>
+
+                <select name="difficulty" required>
+                    <option value="" disabled selected>Difficulty</option>
+                    <option value="Easy">Easy</option>
+                    <option value="Medium">Medium</option>
+                    <option value="Hard">Hard</option>
+                </select>
+
+                <input type="text" name="topics" placeholder="Topics" required>
+
+                <textarea name="description" placeholder="Write your description..." rows="4"></textarea>
+
+                <button type="submit" class="submit-button">
+                    Add Problem
+                </button>
+
+            </form>
+        </dialog>
+        <table>
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Difficulty</th>
+                    <th>Topics</th>
+                    <th>Description</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for problem in problems %}
+                <tr>
+                    <td>{{ problem[0] }}</td>
+                    <td>{{ problem[1] }}</td>
+                    <td>{{ problem[2] }}</td>
+                    <td>{{ problem[3] }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+    </div>
+
+    <script>
+        const modal = document.getElementById("add-modal");
+
+        function openModal() {
+            modal.showModal();
+        }
+
+        function closeModal() {
+            modal.close();
+        }
+    </script>
+
+</body>
+
+</html>
