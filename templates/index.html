@@ -16,6 +16,38 @@
 
         <button class="add-button" onclick="openModal()">Add Question</button>
 
+        <dialog id="edit-modal">
+
+            <form id="edit-form" method="POST" class="question-form">
+
+                <div class="modal-header">
+                    <h2>Edit Question</h2>
+
+                    <button type="button" class="close-button" onclick="closeEditModal()">
+                        ×
+                    </button>
+                </div>
+
+                <input id="edit-name" type="text" name="name" required>
+
+                <select id="edit-difficulty" name="difficulty" required>
+                    <option value="Easy">Easy</option>
+                    <option value="Medium">Medium</option>
+                    <option value="Hard">Hard</option>
+                </select>
+
+                <input id="edit-topics" type="text" name="topics" required>
+
+                <textarea id="edit-description" name="description" rows="4"></textarea>
+
+                <button type="submit" class="submit-button">
+                    Save Changes
+                </button>
+
+            </form>
+
+        </dialog>
+
         <dialog id="add-modal">
             <form action="/add" method="POST" class="question-form">
 
@@ -50,16 +82,35 @@
                     <th>Difficulty</th>
                     <th>Topics</th>
                     <th>Description</th>
+                    <th>Actions</th>
                 </tr>
             </thead>
 
             <tbody>
                 {% for problem in problems %}
                 <tr>
-                    <td>{{ problem[0] }}</td>
                     <td>{{ problem[1] }}</td>
                     <td>{{ problem[2] }}</td>
                     <td>{{ problem[3] }}</td>
+                    <td>{{ problem[4] }}</td>
+
+                    <td>
+                        <button type="button" onclick="openEditModal(
+                        '{{ problem[0] }}',
+                        '{{ problem[1] | e }}',
+                        '{{ problem[2] | e }}',
+                        '{{ problem[3] | e }}',
+                        '{{ problem[4] | e }}'
+                    )">
+                            Edit
+                        </button>
+
+                        <form action="/delete/{{ problem[0] }}" method="POST" style="display:inline;">
+                            <button type="submit">
+                                Delete
+                            </button>
+                        </form>
+                    </td>
                 </tr>
                 {% endfor %}
             </tbody>
@@ -76,6 +127,24 @@
 
         function closeModal() {
             modal.close();
+        }
+
+        const editModal = document.getElementById("edit-modal");
+
+        function openEditModal(id, name, difficulty, topics, description) {
+
+            document.getElementById("edit-name").value = name;
+            document.getElementById("edit-difficulty").value = difficulty;
+            document.getElementById("edit-topics").value = topics;
+            document.getElementById("edit-description").value = description;
+
+            document.getElementById("edit-form").action = "/edit/" + id;
+
+            editModal.showModal();
+        }
+
+        function closeEditModal() {
+            editModal.close();
         }
     </script>
 

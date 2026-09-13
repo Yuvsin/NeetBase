@@ -42,6 +42,7 @@ def home():
 
     problems = connect.execute("""
         SELECT
+            PROBLEM.ID,
             PROBLEM.NAME,
             PROBLEM.DIFFICULTY,
             GROUP_CONCAT(TOPIC.NAME, ', '),
@@ -58,6 +59,77 @@ def home():
 
     return render_template("index.html", problems=problems)
 
+
+@app.route("/delete/<int:problem_id>", methods=["POST"])
+def delete_question(problem_id):
+
+    connect = get_db()
+
+    # First remove topic connections
+    connect.execute("""
+        DELETE FROM PROBLEM_TOPIC
+        WHERE PROBLEM_ID = ?
+    """, (problem_id,))
+
+    # Then remove the problem
+    connect.execute("""
+        DELETE FROM PROBLEM
+        WHERE ID = ?
+    """, (problem_id,))
+
+    connect.commit()
+    connect.close()
+
+    return redirect("/")
+
+@app.route("/edit/<int:problem_id>", methods=["POST"])
+def edit_question(problem_id):
+
+    name = request.form["name"]
+    difficulty = request.form["difficulty"]
+    description = request.form["description"]
+
+    topics = request.form["topics"].split(",")
+    topics = [topic.strip() for topic in topics]
+
+    connect = get_db()
+    cursor = connect.cursor()
+
+    # Update the actual problem
+    cursor.execute("""
+        UPDATE PROBLEM
+        SET NAME = ?, DIFFICULTY = ?, DESCRIPTION = ?
+        WHERE ID = ?
+    """, (name, difficulty, description, problem_id))
+
+    # Remove old topic connections
+    cursor.execute("""
+        DELETE FROM PROBLEM_TOPIC
+        WHERE PROBLEM_ID = ?
+    """, (problem_id,))
+
+    # Add the new topic connections
+    for topic in topics:
+
+        cursor.execute("""
+            INSERT OR IGNORE INTO TOPIC (NAME)
+            VALUES (?)
+        """, (topic,))
+
+        topic_id = cursor.execute("""
+            SELECT ID FROM TOPIC
+            WHERE NAME = ?
+        """, (topic,)).fetchone()[0]
+
+        cursor.execute("""
+            INSERT INTO PROBLEM_TOPIC (PROBLEM_ID, TOPIC_ID)
+            VALUES (?, ?)
+        """, (problem_id, topic_id))
+
+    connect.commit()
+    connect.close()
+
+    return redirect("/")
 
 @app.route("/add", methods=["POST"])
 def add_question():
