@@ -1,11 +1,13 @@
 from flask import Flask, render_template, request, redirect
+from pathlib import Path
 import sqlite3
 
 app = Flask(__name__)
+app.config["DATABASE"] = Path(app.root_path) / "problems.db"
 
 
 def get_db():
-    return sqlite3.connect("problems.db")
+    return sqlite3.connect(app.config["DATABASE"])
 
 
 def create_tables():

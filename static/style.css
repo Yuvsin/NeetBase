@@ -207,3 +207,114 @@ tr:hover {
 
   cursor: pointer;
 }
+
+.actions-cell {
+  white-space: nowrap;
+}
+
+.delete-form {
+  display: inline-flex;
+  margin-left: 6px;
+}
+
+.action-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  min-height: 36px;
+  padding: 8px 13px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1;
+  cursor: pointer;
+  transition: background-color 160ms ease, border-color 160ms ease,
+    box-shadow 160ms ease, transform 160ms ease;
+}
+
+.action-button:hover {
+  transform: translateY(-1px);
+}
+
+.action-button:active {
+  transform: translateY(0);
+}
+
+.action-button:focus-visible,
+.add-button:focus-visible,
+.submit-button:focus-visible,
+.close-button:focus-visible {
+  outline: 3px solid rgba(37, 99, 235, 0.25);
+  outline-offset: 2px;
+}
+
+.edit-button {
+  color: #1d4ed8;
+  background: #eff6ff;
+  border-color: #bfdbfe;
+}
+
+.edit-button:hover {
+  background: #dbeafe;
+  border-color: #93c5fd;
+  box-shadow: 0 4px 10px rgba(37, 99, 235, 0.15);
+}
+
+.delete-button {
+  color: #b91c1c;
+  background: #fef2f2;
+  border-color: #fecaca;
+}
+
+.delete-button:hover {
+  background: #fee2e2;
+  border-color: #fca5a5;
+  box-shadow: 0 4px 10px rgba(220, 38, 38, 0.14);
+}
+
+.submit-button:hover {
+  background-color: #444;
+}
+
+.close-button {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  color: #555;
+  transition: background-color 160ms ease, color 160ms ease;
+}
+
+.close-button:hover {
+  color: #111;
+  background: #f1f5f9;
+}
+
+#edit-modal {
+  width: 90%;
+  max-width: 500px;
+  border: none;
+  border-radius: 10px;
+  padding: 0;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+}
+
+#edit-modal::backdrop {
+  background: rgba(0, 0, 0, 0.6);
+}
+
+@media (max-width: 700px) {
+  .container {
+    width: 94%;
+    margin: 28px auto;
+    overflow-x: auto;
+  }
+
+  .action-button {
+    padding: 8px 10px;
+  }
+}

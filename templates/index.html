@@ -94,20 +94,28 @@
                     <td>{{ problem[3] }}</td>
                     <td>{{ problem[4] }}</td>
 
-                    <td>
-                        <button type="button" onclick="openEditModal(
-                        '{{ problem[0] }}',
-                        '{{ problem[1] | e }}',
-                        '{{ problem[2] | e }}',
-                        '{{ problem[3] | e }}',
-                        '{{ problem[4] | e }}'
-                    )">
-                            Edit
+                    <td class="actions-cell">
+                        <button
+                            type="button"
+                            class="action-button edit-button"
+                            data-problem='{{ {
+                                "id": problem[0],
+                                "name": problem[1],
+                                "difficulty": problem[2],
+                                "topics": problem[3] or "",
+                                "description": problem[4] or ""
+                            } | tojson | forceescape }}'
+                            onclick="openEditModal(this)"
+                            aria-label="Edit {{ problem[1] }}"
+                        >
+                            <span aria-hidden="true">&#9998;</span>
+                            <span>Edit</span>
                         </button>
 
-                        <form action="/delete/{{ problem[0] }}" method="POST" style="display:inline;">
-                            <button type="submit">
-                                Delete
+                        <form action="/delete/{{ problem[0] }}" method="POST" class="delete-form">
+                            <button type="submit" class="action-button delete-button" aria-label="Delete {{ problem[1] }}">
+                                <span aria-hidden="true">&#128465;</span>
+                                <span>Delete</span>
                             </button>
                         </form>
                     </td>
@@ -131,14 +139,15 @@
 
         const editModal = document.getElementById("edit-modal");
 
-        function openEditModal(id, name, difficulty, topics, description) {
+        function openEditModal(button) {
+            const problem = JSON.parse(button.dataset.problem);
 
-            document.getElementById("edit-name").value = name;
-            document.getElementById("edit-difficulty").value = difficulty;
-            document.getElementById("edit-topics").value = topics;
-            document.getElementById("edit-description").value = description;
+            document.getElementById("edit-name").value = problem.name;
+            document.getElementById("edit-difficulty").value = problem.difficulty;
+            document.getElementById("edit-topics").value = problem.topics;
+            document.getElementById("edit-description").value = problem.description;
 
-            document.getElementById("edit-form").action = "/edit/" + id;
+            document.getElementById("edit-form").action = "/edit/" + problem.id;
 
             editModal.showModal();
         }
@@ -146,6 +155,14 @@
         function closeEditModal() {
             editModal.close();
         }
+
+        document.querySelectorAll(".delete-form").forEach((form) => {
+            form.addEventListener("submit", (event) => {
+                if (!window.confirm("Delete this question? This cannot be undone.")) {
+                    event.preventDefault();
+                }
+            });
+        });
     </script>
 
 </body>
